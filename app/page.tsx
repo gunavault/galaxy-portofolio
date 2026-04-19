@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 
@@ -27,39 +27,17 @@ const movies = [
   { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w1280/ve1Sv3sVArmE0nlFjzadcNv1G8r.jpg' },
 ];
 
-const experiences = [
-  {
-    title: 'Cyber Security Engineer',
-    company: 'PT ALTO Network',
-    dates: 'Nov 2025 – Present',
-    current: true,
-    desc: 'Led 3–5 concurrent cybersecurity projects worth up to Rp 1.7 Billion. Managed teams of 2–6, owned vendor selection, budget tracking, and reported directly to CTO. Implemented Splunk SIEM, FortiClient EMS, Wazuh SCA.',
-  },
-  {
-    title: 'Software Engineer',
-    company: 'PT ALTO Network',
-    dates: 'Nov 2024 – Nov 2025',
-    current: false,
-    desc: 'Designed end-to-end fraud operations architecture. Built case management system for 11 users, data pipeline processing 10,000 events/sec, and ISO8583 parser at 300MB/s. Improved data integrity by 20%.',
-  },
-  {
-    title: 'Sales & Pre-Sales Consultant',
-    company: 'Independent',
-    dates: '2024 – Present',
-    current: true,
-    desc: 'Independently sourcing enterprise clients for cybersecurity solutions. Conducting technical needs assessments and bridging complex security products with business requirements.',
-  },
-  {
-    title: 'IT Internship',
-    company: 'PT Perkebunan Nusantara III',
-    dates: 'Sep 2023 – Apr 2024',
-    current: false,
-    desc: 'Built Flutter SOP compliance app used by 1,000+ daily users. Created GIS mapping app deployed across the entire PTPN Group nationwide.',
-  },
-];
 
 export default function Home() {
   const sectionsRef = useRef<NodeListOf<Element> | null>(null);
+const [experiences, setExperiences] = React.useState<any[]>([]);
+
+useEffect(() => {
+  fetch('/api/experiences')
+    .then(r => r.json())
+    .then(data => setExperiences(Array.isArray(data) ? data : []))
+    .catch(() => setExperiences([]));
+}, []);
 
   useEffect(() => {
     // Dynamically import animejs
@@ -226,8 +204,8 @@ export default function Home() {
               <div className="space-y-8">
                 {experiences.map((exp, i) => (
                   <div key={i} className="relative pl-12">
-                    <div className={`absolute left-0 top-2 w-8 h-8 rounded-full flex items-center justify-center border-2 ${exp.current ? 'border-purple-400 bg-purple-900/60' : 'border-purple-700 bg-space-deep'}`}>
-                      <div className={`w-2 h-2 rounded-full ${exp.current ? 'bg-purple-400 animate-pulse' : 'bg-purple-700'}`} />
+                    <div className={`absolute left-0 top-2 w-8 h-8 rounded-full flex items-center justify-center border-2 ${exp.is_current ? 'border-purple-400 bg-purple-900/60' : 'border-purple-700 bg-space-deep'}`}>
+                      <div className={`w-2 h-2 rounded-full ${exp.is_current ? 'bg-purple-400 animate-pulse' : 'bg-purple-700'}`} />
                     </div>
                     <div className="card-glass p-5">
                       <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
@@ -236,11 +214,11 @@ export default function Home() {
                           <p className="text-purple-400 text-sm">{exp.company}</p>
                         </div>
                         <div className="text-right">
-                          <span className="font-mono text-xs text-purple-500">{exp.dates}</span>
-                          {exp.current && <div className="mt-1 text-xs bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded-full border border-purple-700/50 inline-block">Current</div>}
+                          <span className="font-mono text-xs text-purple-500">{exp.start_date} – {exp.end_date || "Present"}</span>
+                          {exp.is_current && <div className="mt-1 text-xs bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded-full border border-purple-700/50 inline-block">Current</div>}
                         </div>
                       </div>
-                      <p className="text-purple-200 text-sm leading-relaxed">{exp.desc}</p>
+                      <p className="text-purple-200 text-sm leading-relaxed">{exp.description}</p>
                     </div>
                   </div>
                 ))}
