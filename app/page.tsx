@@ -20,11 +20,11 @@ const hobbies = [
 ];
 
 const movies = [
-  { title: 'Interstellar', year: '2014', genre: 'Sci-Fi', emoji: '🌌', color: 'from-blue-900 to-indigo-900' },
-  { title: 'Project Hail Mary', year: 'TBA', genre: 'Sci-Fi', emoji: '🚀', color: 'from-purple-900 to-violet-900' },
-  { title: 'Dune', year: '2021', genre: 'Epic Sci-Fi', emoji: '🏜️', color: 'from-amber-900 to-yellow-900' },
-  { title: 'Peaky Blinders', year: '2013', genre: 'Crime Drama', emoji: '🎩', color: 'from-gray-900 to-zinc-800' },
-  { title: 'Dr. Stone', year: '2019', genre: 'Anime', emoji: '🧪', color: 'from-emerald-900 to-teal-900' },
+  { title: 'Interstellar', year: '2014', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg' },
+  { title: 'Project Hail Mary', year: '2026', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w1280/yihdXomYb5kTeSivtFndMy5iDmf.jpg' },
+  { title: 'Dune', year: '2021', genre: 'Epic Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/d5NXSklXo0qyIYkgV94XAgMIckC.jpg' },
+  { title: 'Peaky Blinders', year: '2013', genre: 'Crime Drama', poster: 'https://image.tmdb.org/t/p/w1280/iZ5XwfNWOb6tTdIjm2QuYFDTeLu.jpg' },
+  { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w1280/ve1Sv3sVArmE0nlFjzadcNv1G8r.jpg' },
 ];
 
 const experiences = [
@@ -300,9 +300,13 @@ export default function Home() {
             <p className="text-purple-400 text-sm mb-12">Movies & series that live rent-free in my head 🎬</p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {movies.map((m) => (
-                <div key={m.title} className="movie-card">
-                  <div className={`bg-gradient-to-b ${m.color} h-32 flex items-center justify-center text-5xl`}>
-                    {m.emoji}
+                <div key={m.title} className="movie-card group">
+                  <div className="relative overflow-hidden h-44">
+                    <img
+                      src={m.poster}
+                      alt={m.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
                   </div>
                   <div className="p-3">
                     <h3 className="font-bold text-white text-sm">{m.title}</h3>
