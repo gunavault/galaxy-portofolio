@@ -140,3 +140,157 @@ body {
   box-shadow: 0 0 25px rgba(124,58,237,0.25);
   transform: translateY(-6px);
 }
+/* ===== GLITCH EFFECT ===== */
+.glitch-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-active {
+  animation: glitch-main 0.3s steps(2) forwards;
+}
+
+.glitch-wrapper::before,
+.glitch-wrapper::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.glitch-wrapper:has(.glitch-active)::before {
+  opacity: 0.8;
+  color: #ff00ff;
+  animation: glitch-before 0.3s steps(2) forwards;
+  clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+}
+
+.glitch-wrapper:has(.glitch-active)::after {
+  opacity: 0.8;
+  color: #00ffff;
+  animation: glitch-after 0.3s steps(2) forwards;
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+}
+
+@keyframes glitch-main {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(-3px, 2px); }
+  50%  { transform: translate(3px, -2px); }
+  75%  { transform: translate(-2px, 1px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-before {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(4px, -2px); }
+  50%  { transform: translate(-4px, 2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-after {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(-4px, 2px); }
+  50%  { transform: translate(4px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* ===== CYBERPUNK ELEMENTS ===== */
+.cyber-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-line::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(167,139,250,0.15), transparent);
+  animation: cyber-scan 4s linear infinite;
+}
+
+@keyframes cyber-scan {
+  0%   { left: -100%; }
+  100% { left: 100%; }
+}
+
+.cyber-border {
+  position: relative;
+}
+
+.cyber-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #a78bfa, transparent, #7c3aed);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cyber-border:hover::before {
+  opacity: 1;
+}
+
+/* ===== ADMIN CYBERPUNK THEME ===== */
+.terminal-text {
+  font-family: 'Space Mono', monospace;
+  color: #a78bfa;
+}
+
+.terminal-input {
+  background: rgba(0,0,0,0.6) !important;
+  border-color: rgba(124,58,237,0.5) !important;
+  font-family: 'Space Mono', monospace !important;
+  caret-color: #a78bfa;
+}
+
+.terminal-input:focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 0 1px #a78bfa, 0 0 20px rgba(167,139,250,0.2) !important;
+}
+
+.scanline {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+}
+
+.neon-text {
+  color: #a78bfa;
+  text-shadow:
+    0 0 7px #a78bfa,
+    0 0 10px #a78bfa,
+    0 0 21px #a78bfa,
+    0 0 42px #7c3aed;
+}
+
+.neon-text-cyan {
+  color: #22d3ee;
+  text-shadow:
+    0 0 7px #22d3ee,
+    0 0 10px #22d3ee,
+    0 0 21px #22d3ee;
+}
+
+/* Cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink { animation: blink 1s step-end infinite; }

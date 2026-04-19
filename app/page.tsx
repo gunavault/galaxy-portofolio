@@ -2,6 +2,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
+import TypeWriter from '@/components/TypeWriter';
+import ScrambleText from '@/components/ScrambleText';
+import SoundManager from '@/components/SoundManager';
 
 const GalaxyCanvas = dynamic(() => import('@/components/GalaxyCanvas'), { ssr: false });
 
@@ -27,17 +30,34 @@ const movies = [
   { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w1280/ve1Sv3sVArmE0nlFjzadcNv1G8r.jpg' },
 ];
 
+// experiences loaded from DB via useEffect
 
 export default function Home() {
   const sectionsRef = useRef<NodeListOf<Element> | null>(null);
-const [experiences, setExperiences] = React.useState<any[]>([]);
+  const [experiences, setExperiences] = React.useState<any[]>([]);
+  const [visibleSections, setVisibleSections] = React.useState<Set<string>>(new Set());
 
-useEffect(() => {
-  fetch('/api/experiences')
-    .then(r => r.json())
-    .then(data => setExperiences(Array.isArray(data) ? data : []))
-    .catch(() => setExperiences([]));
-}, []);
+  useEffect(() => {
+    fetch('/api/experiences')
+      .then(r => r.json())
+      .then(data => setExperiences(Array.isArray(data) ? data : []))
+      .catch(() => setExperiences([]));
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setVisibleSections(prev => new Set([...prev, entry.target.id]));
+        }
+      });
+    }, { threshold: 0.2 });
+    ['about','experience','skills','hobbies','movies','contact'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     // Dynamically import animejs
@@ -114,6 +134,7 @@ useEffect(() => {
     <>
       <GalaxyCanvas />
       <Navbar />
+      <SoundManager />
       <div className="content-layer">
 
         {/* HERO */}
@@ -131,10 +152,10 @@ useEffect(() => {
             Hello, Universe 👋
           </p>
           <h1 className="hero-title text-5xl md:text-7xl font-bold text-white glow-text mb-4 opacity-0">
-            Guna Dharma
+            <TypeWriter text="Guna Dharma" speed={80} delay={400} />
           </h1>
           <p className="hero-sub text-lg md:text-xl text-purple-300 max-w-xl mb-2 opacity-0">
-            Cybersecurity Engineer · Software Developer · Tech Explorer
+            <TypeWriter text="Cybersecurity Engineer · Software Developer · Tech Explorer" speed={30} delay={1200} cursor={false} />
           </p>
           <p className="hero-sub text-sm text-purple-500 mb-10 opacity-0 font-mono">
             📍 Jakarta, Indonesia
@@ -162,7 +183,7 @@ useEffect(() => {
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// about me</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-              Exploring the <span className="text-purple-400">digital universe</span>
+              <ScrambleText text="Exploring the digital universe" trigger={visibleSections.has('about')} className="text-purple-400" />
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="card-glass p-6">
@@ -197,7 +218,7 @@ useEffect(() => {
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// work experience</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
-              Mission <span className="text-purple-400">Log</span>
+              <ScrambleText text="Mission Log" trigger={visibleSections.has('experience')} />
             </h2>
             <div className="relative">
               <div className="absolute left-4 top-0 bottom-0 w-px timeline-line" />
@@ -232,7 +253,7 @@ useEffect(() => {
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// tech stack</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
-              Arsenal & <span className="text-purple-400">Abilities</span>
+              <ScrambleText text="Arsenal & Abilities" trigger={visibleSections.has('skills')} />
             </h2>
             <div className="space-y-6 skills-group">
               {Object.entries(skills).map(([category, items]) => (
@@ -254,7 +275,7 @@ useEffect(() => {
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// beyond the code</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-12">
-              Life in <span className="text-purple-400">Orbit</span>
+              <ScrambleText text="Life in Orbit" trigger={visibleSections.has('hobbies')} />
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {hobbies.map((h) => (
@@ -273,7 +294,7 @@ useEffect(() => {
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// cinematic universe</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Favorites from the <span className="text-purple-400">Multiverse</span>
+              <ScrambleText text="Favorites from the Multiverse" trigger={visibleSections.has('movies')} />
             </h2>
             <p className="text-purple-400 text-sm mb-12">Movies & series that live rent-free in my head 🎬</p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -284,7 +305,9 @@ useEffect(() => {
                       src={m.poster}
                       alt={m.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/1a0533/a78bfa?text=' + encodeURIComponent(m.title); }}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   <div className="p-3">
                     <h3 className="font-bold text-white text-sm">{m.title}</h3>
@@ -302,7 +325,7 @@ useEffect(() => {
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// contact</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Let's Connect <span className="text-purple-400">Across the Galaxy</span>
+              <ScrambleText text="Let's Connect Across the Galaxy" trigger={visibleSections.has('contact')} />
             </h2>
             <p className="text-purple-300 mb-10 max-w-lg mx-auto text-sm">
               Open for opportunities, collaborations, or just a good conversation about tech, space, or fishing spots.
