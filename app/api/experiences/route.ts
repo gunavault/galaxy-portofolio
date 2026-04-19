@@ -6,7 +6,7 @@ export async function GET() {
     const db = getDb();
     await initDb();
     const result = await db.execute('SELECT * FROM experiences ORDER BY order_index ASC');
-    return NextResponse.json(result.rows);
+    return NextResponse.json(result.rows ?? []);
   } catch (e) {
     return NextResponse.json({ error: 'DB error' }, { status: 500 });
   }

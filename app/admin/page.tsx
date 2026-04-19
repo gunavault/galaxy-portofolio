@@ -47,7 +47,7 @@ export default function AdminPage() {
   const loadExperiences = async () => {
     const res = await fetch('/api/experiences');
     const data = await res.json();
-    setExperiences(data);
+    setExperiences(Array.isArray(data) ? data : []);
   };
 
   useEffect(() => {
