@@ -135,6 +135,19 @@ export default function Home() {
       <GalaxyCanvas />
       <Navbar />
       <SoundManager />
+      <div className="fixed top-24 right-6 z-40 text-right pointer-events-none">
+  <div className={`section-label font-mono text-xs transition-all duration-500 ${
+    visibleSections.has('contact') || visibleSections.has('movies') ? 'text-blue-400' :
+    visibleSections.has('hobbies') ? 'text-cyan-400' :
+    visibleSections.has('skills') || visibleSections.has('experience') ? 'text-indigo-400' :
+    'text-purple-400'
+  }`}>
+    {visibleSections.has('contact') || visibleSections.has('movies') ? '🌍 Earth Orbit' :
+     visibleSections.has('hobbies') ? '☀️ Solar System' :
+     visibleSections.has('skills') || visibleSections.has('experience') ? '☁️ Interstellar Cloud' :
+     '🌌 Milky Way'}
+  </div>
+</div>
       <div className="content-layer">
 
         {/* HERO */}
