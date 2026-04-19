@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb, initDb } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 export async function GET() {
   try {
     const db = getDb();
-    await initDb();
     const result = await db.execute('SELECT * FROM experiences ORDER BY order_index ASC');
 
     const rows = result.rows.map((row: any) => ({
