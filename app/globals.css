@@ -13,7 +13,13 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
+.content-layer h1,
+.content-layer h2,
+.content-layer h3 {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
 html { scroll-behavior: smooth; }
 
 body {

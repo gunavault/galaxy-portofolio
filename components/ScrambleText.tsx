@@ -15,24 +15,40 @@ export default function ScrambleText({ text, trigger = true, className = '', del
   const built = useRef(false);
 
   // Build character spans once on mount
-  useEffect(() => {
-    if (!ref.current || built.current) return;
-    built.current = true;
+useEffect(() => {
+  if (!ref.current || built.current) return;
+  built.current = true;
 
-    const chars = text.split('').map((char) => {
+  ref.current.innerHTML = '';
+  charsRef.current = [];
+
+  const words = text.split(' ');
+
+  words.forEach((word, wordIndex) => {
+    const wordSpan = document.createElement('span');
+    wordSpan.style.display = 'inline-block';
+    // wordSpan.style.whiteSpace = 'nowrap'; // 🔥 prevents word breaking
+
+    word.split('').forEach((char) => {
       const span = document.createElement('span');
-      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.textContent = char;
       span.style.display = 'inline-block';
       span.style.opacity = '0';
       span.style.transform = 'translateY(50px)';
       span.style.willChange = 'transform, opacity';
-      return span;
+
+      charsRef.current.push(span);
+      wordSpan.appendChild(span);
     });
 
-    ref.current.innerHTML = '';
-    chars.forEach(span => ref.current!.appendChild(span));
-    charsRef.current = chars;
-  }, [text]);
+    ref.current!.appendChild(wordSpan);
+
+    // add space between words
+    if (wordIndex < words.length - 1) {
+      ref.current!.appendChild(document.createTextNode(' '));
+    }
+  });
+}, [text]);
 
   // Scroll-bound animation
   useEffect(() => {
@@ -68,5 +84,14 @@ export default function ScrambleText({ text, trigger = true, className = '', del
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return <span ref={ref} className={className}>{text}</span>;
-}
+  return <span
+  ref={ref}
+  className={className}
+  style={{
+    whiteSpace: 'normal',
+    wordBreak: 'normal',
+    overflowWrap: 'normal'
+  }}
+>
+  {text}
+</span>;}
