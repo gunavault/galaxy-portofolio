@@ -24,10 +24,10 @@ const skills = {
 
 // const movies = [
 //   { title: 'Interstellar', year: '2014', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg' },
-//   { title: 'Project Hail Mary', year: '2026', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w1280/yihdXomYb5kTeSivtFndMy5iDmf.jpg' },
+//   { title: 'Project Hail Mary', year: 'TBA', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/b33nnKl1GSFbao4l3fZDDqsMx0F.jpg' },
 //   { title: 'Dune', year: '2021', genre: 'Epic Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/d5NXSklXo0qyIYkgV94XAgMIckC.jpg' },
-//   { title: 'Peaky Blinders', year: '2013', genre: 'Crime Drama', poster: 'https://image.tmdb.org/t/p/w1280/iZ5XwfNWOb6tTdIjm2QuYFDTeLu.jpg' },
-//   { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w1280/ve1Sv3sVArmE0nlFjzadcNv1G8r.jpg' },
+//   { title: 'Peaky Blinders', year: '2013', genre: 'Crime Drama', poster: 'https://image.tmdb.org/t/p/w300/vUUqzWa2LnHIVqkaKVlVGkPaQNb.jpg' },
+//   { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w300/6xeVM8KCfNHKBbSCgg96IyGR7aR.jpg' },
 // ];
 
 // experiences loaded from DB via useEffect
@@ -133,7 +133,7 @@ export default function Home() {
       .then(r => r.json())
       .then(data => setExperiences(Array.isArray(data) ? data : []))
       .catch(() => setExperiences([]));
-    fetch('/api/hobbies')
+          fetch('/api/hobbies')
       .then(r => r.json())
       .then(data => setHobbies(Array.isArray(data) ? data : []))
       .catch(() => setHobbies([]));
@@ -234,19 +234,11 @@ export default function Home() {
       <GalaxyCanvas />
       <Navbar />
       <SoundManager />
-      <div className="fixed top-24 right-6 z-40 text-right pointer-events-none">
-  <div className={`section-label font-mono text-xs transition-all duration-500 ${
-    visibleSections.has('contact') || visibleSections.has('movies') ? 'text-blue-400' :
-    visibleSections.has('hobbies') ? 'text-cyan-400' :
-    visibleSections.has('skills') || visibleSections.has('experience') ? 'text-indigo-400' :
-    'text-purple-400'
-  }`}>
-    {visibleSections.has('contact') || visibleSections.has('movies') ? '🌍 Earth Orbit' :
-     visibleSections.has('hobbies') ? '☀️ Solar System' :
-     visibleSections.has('skills') || visibleSections.has('experience') ? '☁️ Interstellar Cloud' :
-     '🌌 Milky Way'}
-  </div>
-</div>
+
+
+
+
+
       <div className="content-layer">
 
         {/* HERO */}

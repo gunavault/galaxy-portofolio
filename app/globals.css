@@ -21,7 +21,6 @@ body {
   color: #e2d9f3;
   font-family: 'Space Grotesk', sans-serif;
   overflow-x: hidden;
-  white-space: pre-line;
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -43,9 +42,9 @@ body {
 }
 
 .card-glass {
-  background: rgba(0, 0, 0, 0.75) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(167, 139, 250, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(167, 139, 250, 0.15);
   border-radius: 16px;
   transition: all 0.3s ease;
 }
@@ -71,6 +70,12 @@ body {
   width: 100%; height: 100%;
   z-index: 0;
   pointer-events: none;
+  touch-action: none;
+}
+
+/* Prevent any scroll hijacking */
+html, body {
+  scroll-behavior: auto !important;
 }
 
 .content-layer {
@@ -78,20 +83,6 @@ body {
   z-index: 1;
 }
 
-.content-layer section {
-  position: relative;
-}
-
-.content-layer section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(3, 1, 10, 0.55);
-  backdrop-filter: blur(2px);
-  border-radius: 24px;
-  z-index: -1;
-  pointer-events: none;
-}
 .skill-pill {
   background: rgba(124, 58, 237, 0.15);
   border: 1px solid rgba(124, 58, 237, 0.3);
@@ -155,6 +146,7 @@ body {
   box-shadow: 0 0 25px rgba(124,58,237,0.25);
   transform: translateY(-6px);
 }
+
 /* ===== GLITCH EFFECT ===== */
 .glitch-wrapper {
   position: relative;
@@ -173,12 +165,6 @@ body {
   width: 100%;
   height: 100%;
   opacity: 0;
-}
-.content-layer h1,
-.content-layer h2,
-.content-layer h3,
-.content-layer p {
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
 }
 
 .glitch-wrapper:has(.glitch-active)::before {
@@ -316,17 +302,16 @@ body {
 }
 .cursor-blink { animation: blink 1s step-end infinite; }
 
-
 /* ===== COSMIC JOURNEY BACKGROUNDS ===== */
 .stage-galaxy  { --bg-color: #03010a; }
 .stage-cloud   { --bg-color: #080418; }
 .stage-solar   { --bg-color: #050210; }
 .stage-earth   { --bg-color: #020d1a; }
 
-/* Make text sections more readable over space bg */
+/* Readable over 2D canvas */
 .card-glass {
-  background: rgba(0, 0, 0, 0.5) !important;
-  backdrop-filter: blur(16px) !important;
+  background: rgba(5, 2, 18, 0.7) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 .section-label {
