@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const links = ['About', 'Experience', 'Skills', 'Hobbies', 'Movies', 'Contact'];
+const links = ['About', 'Experience', 'Skills', 'Hobbies', 'Movies', 'Contact','cv'];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -34,6 +34,12 @@ export default function Navbar() {
               {l}
             </a>
           ))}
+          <a href="/api/generate-cv"
+          download
+          className="font-mono text-xs tracking-widest uppercase px-4 py-1.5 border border-purple-700/50 text-purple-400 hover:text-white hover:border-purple-400 rounded-full transition-all"
+        >
+          ⬇ CV
+        </a>
         </div>
 
         {/* Mobile toggle */}
@@ -52,6 +58,13 @@ export default function Navbar() {
               {l}
             </a>
           ))}
+              
+      <a href="/api/generate-cv"
+      download
+      className="font-mono text-xs tracking-widest uppercase text-purple-400 hover:text-white transition-colors"
+    >
+      ⬇ Download CV
+    </a>
         </div>
       )}
     </nav>

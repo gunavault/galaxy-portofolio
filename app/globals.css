@@ -21,6 +21,8 @@ body {
   color: #e2d9f3;
   font-family: 'Space Grotesk', sans-serif;
   overflow-x: hidden;
+   white-space: pre-line;
+
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -64,13 +66,21 @@ body {
   background: linear-gradient(to bottom, transparent, #7c3aed, transparent);
 }
 
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 #galaxy-canvas {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 0;
   pointer-events: none;
   touch-action: none;
+  overflow: hidden;
 }
 
 /* Prevent any scroll hijacking */
