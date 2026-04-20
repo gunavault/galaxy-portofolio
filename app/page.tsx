@@ -16,32 +16,131 @@ const skills = {
   'Competencies': ['Project Management', 'System Architecture', 'Vendor Management', 'Executive Reporting'],
 };
 
-const hobbies = [
-  { icon: '🎣', label: 'Fishing', desc: 'Finding peace in patience. Early mornings, quiet water, and the thrill of the catch.' },
-  { icon: '🎮', label: 'Gaming', desc: 'Story-driven RPGs and strategy games. Always up for a challenge.' },
-  { icon: '⚡', label: 'Doing Fun Stuff', desc: 'Trying new things, building random projects, and exploring what\'s next.' },
-];
+// const hobbies = [
+//   { icon: '🎣', label: 'Fishing', desc: 'Finding peace in patience. Early mornings, quiet water, and the thrill of the catch.' },
+//   { icon: '🎮', label: 'Gaming', desc: 'Story-driven RPGs and strategy games. Always up for a challenge.' },
+//   { icon: '⚡', label: 'Doing Fun Stuff', desc: 'Trying new things, building random projects, and exploring what\'s next.' },
+// ];
 
-const movies = [
-  { title: 'Interstellar', year: '2014', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg' },
-  { title: 'Project Hail Mary', year: '2026', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w1280/yihdXomYb5kTeSivtFndMy5iDmf.jpg' },
-  { title: 'Dune', year: '2021', genre: 'Epic Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/d5NXSklXo0qyIYkgV94XAgMIckC.jpg' },
-  { title: 'Peaky Blinders', year: '2013', genre: 'Crime Drama', poster: 'https://image.tmdb.org/t/p/w1280/iZ5XwfNWOb6tTdIjm2QuYFDTeLu.jpg' },
-  { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w1280/ve1Sv3sVArmE0nlFjzadcNv1G8r.jpg' },
-];
+// const movies = [
+//   { title: 'Interstellar', year: '2014', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg' },
+//   { title: 'Project Hail Mary', year: '2026', genre: 'Sci-Fi', poster: 'https://image.tmdb.org/t/p/w1280/yihdXomYb5kTeSivtFndMy5iDmf.jpg' },
+//   { title: 'Dune', year: '2021', genre: 'Epic Sci-Fi', poster: 'https://image.tmdb.org/t/p/w300/d5NXSklXo0qyIYkgV94XAgMIckC.jpg' },
+//   { title: 'Peaky Blinders', year: '2013', genre: 'Crime Drama', poster: 'https://image.tmdb.org/t/p/w1280/iZ5XwfNWOb6tTdIjm2QuYFDTeLu.jpg' },
+//   { title: 'Dr. Stone', year: '2019', genre: 'Anime', poster: 'https://image.tmdb.org/t/p/w1280/ve1Sv3sVArmE0nlFjzadcNv1G8r.jpg' },
+// ];
 
 // experiences loaded from DB via useEffect
+function MovieCarousel({ movies }: { movies: any[] }) {
+  const [active, setActive] = React.useState(0);
 
+  React.useEffect(() => {
+    if (movies.length > 0) setActive(Math.floor(movies.length / 2));
+  }, [movies.length]);
+
+  if (movies.length === 0) return null;
+
+  const prev = () => setActive(i => (i - 1 + movies.length) % movies.length);
+  const next = () => setActive(i => (i + 1) % movies.length);
+
+  return (
+    <div className="relative flex items-center justify-center gap-0 h-80 select-none">
+      {/* Prev button */}
+      <button onClick={prev} className="absolute left-0 z-20 w-10 h-10 rounded-full bg-black/60 border border-purple-800/50 flex items-center justify-center text-purple-400 hover:text-white hover:border-purple-500 transition-all">
+        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 4l-6 4 6 4"/></svg>
+      </button>
+
+      {/* Cards */}
+      <div className="relative w-full h-full flex items-center justify-center">
+        {movies.map((m, i) => {
+          const offset = i - active;
+          const absOffset = Math.abs(offset);
+          if (absOffset > 2) return null;
+
+          const scale = offset === 0 ? 1 : absOffset === 1 ? 0.82 : 0.65;
+          const translateX = offset * 180;
+          const zIndex = 10 - absOffset;
+          const opacity = absOffset === 0 ? 1 : absOffset === 1 ? 0.7 : 0.4;
+          const blur = absOffset === 0 ? 0 : absOffset === 1 ? 1 : 3;
+
+          return (
+            <div
+              key={m.id || m.title}
+              onClick={() => setActive(i)}
+              style={{
+                position: 'absolute',
+                transform: `translateX(${translateX}px) scale(${scale})`,
+                zIndex,
+                opacity,
+                filter: `blur(${blur}px)`,
+                transition: 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                cursor: offset !== 0 ? 'pointer' : 'default',
+              }}
+            >
+              <div className={`w-44 rounded-2xl overflow-hidden border transition-all duration-400 ${
+                offset === 0
+                  ? 'border-purple-500/60 shadow-[0_0_30px_rgba(124,58,237,0.4)]'
+                  : 'border-purple-900/30'
+              }`}>
+                <div className="relative h-64 bg-purple-950">
+                  <img
+                    src={m.poster}
+                    alt={m.title}
+                    className="w-full h-full object-cover"
+                    onError={e => { (e.target as HTMLImageElement).src = `https://via.placeholder.com/300x450/1a0533/a78bfa?text=${encodeURIComponent(m.title)}`; }}
+                  />
+                  {offset === 0 && (
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  )}
+                </div>
+                {offset === 0 && (
+                  <div className="p-3 bg-black/80">
+                    <h3 className="font-bold text-white text-sm truncate">{m.title}</h3>
+                    <p className="text-purple-400 text-xs mt-0.5">{m.genre}</p>
+                    <p className="text-purple-600 text-xs font-mono">{m.year}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Next button */}
+      <button onClick={next} className="absolute right-0 z-20 w-10 h-10 rounded-full bg-black/60 border border-purple-800/50 flex items-center justify-center text-purple-400 hover:text-white hover:border-purple-500 transition-all">
+        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 4l6 4-6 4"/></svg>
+      </button>
+
+      {/* Dots */}
+      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+        {movies.map((_, i) => (
+          <button key={i} onClick={() => setActive(i)}
+            className={`w-1.5 h-1.5 rounded-full transition-all ${i === active ? 'bg-purple-400 w-4' : 'bg-purple-800'}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 export default function Home() {
   const sectionsRef = useRef<NodeListOf<Element> | null>(null);
   const [experiences, setExperiences] = React.useState<any[]>([]);
   const [visibleSections, setVisibleSections] = React.useState<Set<string>>(new Set());
-
+  const [hobbies, setHobbies] = React.useState<any[]>([]);
+  const [movies, setMovies] = React.useState<any[]>([]);
   useEffect(() => {
     fetch('/api/experiences')
       .then(r => r.json())
       .then(data => setExperiences(Array.isArray(data) ? data : []))
       .catch(() => setExperiences([]));
+    fetch('/api/hobbies')
+      .then(r => r.json())
+      .then(data => setHobbies(Array.isArray(data) ? data : []))
+      .catch(() => setHobbies([]));
+    fetch('/api/movies')
+      .then(r => r.json())
+      .then(data => setMovies(Array.isArray(data) ? data : []))
+      .catch(() => setMovies([]));
   }, []);
 
   useEffect(() => {
@@ -295,7 +394,7 @@ export default function Home() {
                 <div key={h.label} className="hobby-card">
                   <div className="text-5xl mb-4">{h.icon}</div>
                   <h3 className="font-bold text-white text-lg mb-2">{h.label}</h3>
-                  <p className="text-purple-400 text-sm leading-relaxed">{h.desc}</p>
+                  <p className="text-purple-400 text-sm leading-relaxed">{h.description}</p>
                 </div>
               ))}
             </div>
@@ -303,33 +402,14 @@ export default function Home() {
         </section>
 
         {/* MOVIES */}
-        <section id="movies" className="max-w-4xl mx-auto px-6 py-24">
+        <section id="movies" className="max-w-5xl mx-auto px-6 py-24">
           <div className="section-reveal">
             <p className="font-mono text-purple-500 text-xs tracking-widest uppercase mb-3">// cinematic universe</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               <ScrambleText text="Favorites from the Multiverse" trigger={visibleSections.has('movies')} />
             </h2>
             <p className="text-purple-400 text-sm mb-12">Movies & series that live rent-free in my head 🎬</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {movies.map((m) => (
-                <div key={m.title} className="movie-card group">
-                  <div className="relative overflow-hidden h-44">
-                    <img
-                      src={m.poster}
-                      alt={m.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x450/1a0533/a78bfa?text=' + encodeURIComponent(m.title); }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-bold text-white text-sm">{m.title}</h3>
-                    <p className="text-purple-400 text-xs mt-1">{m.genre}</p>
-                    <p className="text-purple-600 text-xs font-mono mt-1">{m.year}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <MovieCarousel movies={movies} />
           </div>
         </section>
 
